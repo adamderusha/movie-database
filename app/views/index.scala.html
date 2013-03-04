@@ -1,7 +1,9 @@
-@(message: String)
+@(movies: List[Movie])
 
-@main("Welcome to Play 2.1") {
-    
-    @play20.welcome(message)
-    
+@main("View Movies") {
+    <ul>
+      @movies.map { movie =>
+        <li>@movie.title - @movie.year</li>
+      }
+    </ul>
 }
