@@ -3,7 +3,14 @@
 @main("View Movies") {
     <ul>
       @movies.map { movie =>
-        <li>@movie.title - @movie.year</li>
+        <li>
+          @movie.title - @movie.year
+          <ul>
+            @movie.genres.map { genre =>
+              <li>@genre</li>
+            }
+          </ul>
+        </li>
       }
     </ul>
 }
