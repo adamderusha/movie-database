@@ -42,13 +42,6 @@ object Application extends Controller {
     val getter = new DataGrabber(api_key)
     val movies = getter.getMovieList(title)
     Ok(Json.toJson(movies.map(Movie.makeJson(_))))
-
-    //Redirect(routes.Application.index)
-    /*
-    val getter = new DataGrabber(api_key)
-    val movies = getter.getMovieList(title)
-    Ok(toJson(movies.map(Movie.toJson(_))))
-    */
   }
 
   def add = TODO
