@@ -9,6 +9,7 @@ import play.api.data._
 import play.api.data.Forms._
 
 import play.api.Logger
+import play.api.libs.json._
 
 import models.Movie
 import utility.DataGrabber
@@ -28,8 +29,6 @@ object Application extends Controller {
 
 
   def index = Action {
-    val getter = new DataGrabber(api_key)
-    val movies = getter.getMovieList("Toy Story")
     Ok(views.html.index(Movie.all()))
   }
 
@@ -37,13 +36,19 @@ object Application extends Controller {
     Ok(views.html.lookup())
   }
 
-  def lookupAction = Action { implicit request =>
-    val inputForm = Form(
-      "title" -> text
-    )
-    val title = inputForm.bindFromRequest.get
-   
-    Redirect(routes.Application.index)
+  def lookupMovie = Action { implicit request =>
+    val params = request.queryString.map( t => t._1 -> t._2.mkString )
+    val title = params.getOrElse("title", "")
+    val getter = new DataGrabber(api_key)
+    val movies = getter.getMovieList(title)
+    Ok(Json.toJson(movies.map(Movie.makeJson(_))))
+
+    //Redirect(routes.Application.index)
+    /*
+    val getter = new DataGrabber(api_key)
+    val movies = getter.getMovieList(title)
+    Ok(toJson(movies.map(Movie.toJson(_))))
+    */
   }
 
   def add = TODO

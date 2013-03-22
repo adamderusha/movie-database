@@ -1,6 +1,33 @@
 @main("Lookup Movie!") {
-  <form action="/lookup" method="POST">
-    <input type="text" />
-    <input type="submit" value="Go!" />
+  <form action="javascript:void(0)">
+    <input id="lookupText" type="text" name="title" />
+    <input id="lookupSubmit" type="submit" />
   </form>
+
+  <div id="movieChoices"></div>
+
+  <script type="text/javascript">
+  	function buildTable(data) {
+  		var code = '<table border="0" cellpadding="0" cellspacing="0">';
+  		for( var i = 0; i < data.length; i++ ) {
+  			code += "<tr>";
+  			code += "<td>" + data[i].title + " (" + data[i].year + ")</td>";
+  			code += "<td><img src=\"" + data[i].poster + "\" /></td>";
+  			code += "</tr>";
+  		}
+  		code += "</table>";
+  		jQuery('#movieChoices').html(code);
+  	}
+
+  	jQuery(document).ready(function() {
+  		jQuery('#lookupSubmit').click(function() {
+  			var title = jQuery('#lookupText').val();
+  			var sendData = {
+  				"title": title
+  			};
+  			jQuery.getJSON('getmovie', sendData, buildTable);
+  			return false;
+  		});
+  	});
+  </script>
 }

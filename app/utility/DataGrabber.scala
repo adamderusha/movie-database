@@ -6,6 +6,8 @@ import scala.concurrent.duration._
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json._
 
+import play.api.Logger
+
 import models.Movie
 
 class DataGrabber(api_key: String) {
@@ -17,7 +19,7 @@ class DataGrabber(api_key: String) {
     : (String, Int, String, String) = {
     val title = (data \ "title").as[String]
     val year = (data \ "year").as[Int]
-    val poster = (data \ "posters" \ "original").as[String]
+    val poster = (data \ "posters" \ "profile").as[String]
     val link = (data \ "links" \ "self").as[String]
     (title, year, poster, link)
   }
@@ -28,7 +30,7 @@ class DataGrabber(api_key: String) {
     "%s?%s".format(base, paramString)
   }
 
-  def getMovieList(title: String, page_limit: Int = 10): List[Movie] = {
+  def getMovieList(title: String, page_limit: Int = 5): List[Movie] = {
     //Get movie data from rottentomatoes api
     val movieUrl = "http://api.rottentomatoes.com/api/public/v1.0/movies.json"
     val movieParams = Map(
@@ -66,6 +68,6 @@ class DataGrabber(api_key: String) {
     }
    
     // Wait for the data to come in
-    Await.result(movies, 5 second).asInstanceOf[List[Movie]]
+    Await.result(movies, Duration.Inf).asInstanceOf[List[Movie]]
   }
 }

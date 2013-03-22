@@ -5,6 +5,8 @@ import anorm.SqlParser._
 import play.api.db._
 import play.api.Play.current
 
+import play.api.libs.json._
+
 import scala.collection.mutable.HashMap
 import org.postgresql.util.PSQLException
 
@@ -68,6 +70,19 @@ object Movie {
     val data = lookup.map(x => Movie(x._1._1, x._1._2, x._1._3, x._1._4, x._2)).toList
     data.sortBy(titleSorter(_))
   }
+  
+  def makeJson(movie: Movie): JsValue = {
+    Json.toJson(
+      Map(
+        "id" -> Json.toJson(movie.id),
+        "title" -> Json.toJson(movie.title),
+        "year" -> Json.toJson(movie.year),
+        "poster" -> Json.toJson(movie.poster),
+        "genres" -> Json.toJson(movie.genres)
+      )
+    )
+  }
+  
 
   private def titleSorter(movie: Movie): String = {
     val title = movie.title.toLowerCase.filter(_ != ' ')
