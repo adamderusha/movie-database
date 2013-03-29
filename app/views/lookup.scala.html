@@ -4,23 +4,33 @@
     <input id="lookupSubmit" type="submit" />
   </form>
 
+  @* Will have to find (or make) a loading image *@
+  @*<img id="loadingImage" src="/assets/public/images/362.gif" style="display: none;" />*@
+  <div id="loadingImage" style="display: none;">Loading...</div>
   <div id="movieChoices"></div>
 
   <script type="text/javascript">
   	function buildTable(data) {
-  		var code = '<table border="0" cellpadding="0" cellspacing="0">';
-  		for( var i = 0; i < data.length; i++ ) {
-  			code += "<tr>";
-  			code += "<td>" + data[i].title + " (" + data[i].year + ")</td>";
-  			code += "<td><img src=\"" + data[i].poster + "\" /></td>";
-  			code += "</tr>";
-  		}
-  		code += "</table>";
-  		jQuery('#movieChoices').html(code);
+      if (data.length == 0) {
+        jQuery('#movieChoices').html('No movies found');
+      } else {
+        var code = '<table border="0" cellpadding="0" cellspacing="0">';
+        for( var i = 0; i < data.length; i++ ) {
+          code += "<tr>";
+          code += "<td>" + data[i].title + " (" + data[i].year + ")</td>";
+          code += "<td><img src=\"" + data[i].poster + "\" /></td>";
+          code += "</tr>";
+        }
+        code += "</table>";
+        jQuery('#loadingImage').hide();
+        jQuery('#movieChoices').html(code);
+      }
   	}
 
   	jQuery(document).ready(function() {
   		jQuery('#lookupSubmit').click(function() {
+        jQuery('#movieChoices').html("");
+        jQuery('#loadingImage').show();
   			var title = jQuery('#lookupText').val();
   			var sendData = {
   				"title": title
@@ -31,3 +41,4 @@
   	});
   </script>
 }
+
