@@ -33,7 +33,9 @@ class DataGrabber(api_key: String) {
 
   // Builds a url like http://www.site.com/api?param1=value1&param2=value2 etc.
   private def urlBuilder(base: String, params: Map[String, String]): String = {
-    val paramString = params.map(t => "%s=%s".format(t._1, t._2)).mkString("&")
+    val paramString = params.map { 
+      case (key, value) => "%s=%s".format(key, value) 
+    }.mkString("&")
     "%s?%s".format(base, paramString)
   }
 
@@ -60,17 +62,15 @@ class DataGrabber(api_key: String) {
 
 
       // For each movie, request from the api more info (we need the genres)
-      val result: List[Future[Movie]] = filteredMovieData.map { t =>
-        val moreMovieInfoUrl = urlBuilder(t._4, Map("apikey" -> api_key))
+      val result: List[Future[Movie]] = filteredMovieData.map { case (title, year, poster, link) =>
+        val moreMovieInfoUrl = urlBuilder(link, Map("apikey" -> api_key))
         val genreData = WS.url(moreMovieInfoUrl).get
 
         // Go through the JSON, extract the genres, and create the Movie class
         genreData.map { genre =>
           val genreJson = genre.json
           val genres = (genreJson \ "genres").as[List[String]]
-          t match {
-            case (t, y, p, _) => Movie(t, y, p, genres)
-          }
+          Movie(title, year, poster, genres)
         }
       }
 
