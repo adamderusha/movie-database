@@ -13,6 +13,7 @@ import play.api.libs.json._
 
 import models.Movie
 import utility.DataGrabber
+import utility.UtilityFunctions._
 
 object Application extends Controller {
   val api_key = Play.current.configuration.getString("application.rotten_api_key") match {
@@ -41,7 +42,11 @@ object Application extends Controller {
     val title = params.getOrElse("title", "")
     val getter = new DataGrabber(api_key)
     val movies = getter.getMovieList(title)
-    Ok(Json.toJson(movies.map(Movie.makeJson(_))))
+    val request_id = createRequestId()
+    Ok(Json.toJson(Map(
+      "movies" -> Json.toJson(movies.map(Movie.makeJson(_))),
+      "request_id" -> Json.toJson(request_id)
+    )))
   }
 
   def add = TODO

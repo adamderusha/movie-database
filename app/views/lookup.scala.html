@@ -11,17 +11,21 @@
 
   <script type="text/javascript">
   	function buildTable(data) {
-      if (data.length == 0) {
+      if (data.movies.length == 0) {
+        jQuery('#loadingImage').hide();
         jQuery('#movieChoices').html('No movies found');
       } else {
-        var code = '<table border="0" cellpadding="0" cellspacing="0">';
-        for( var i = 0; i < data.length; i++ ) {
-          code += "<tr>";
-          code += "<td>" + data[i].title + " (" + data[i].year + ")</td>";
-          code += "<td><img src=\"" + data[i].poster + "\" /></td>";
-          code += "</tr>";
+        var code = '';
+        for(var i = 0; i < data.movies.length; i++) {
+          code += '<form action="/addMovie" method="post">';
+          code += '<input type="hidden" name="request_id" value="' + data.request_id + '" />';
+          code += '<input type="hidden" name="title" value="' + data.movies[i].title + '" />';
+          code += '<input type="hidden" name="year" value="' + data.movies[i].year + '" />';
+          code += '<p><img src="' + data.movies[i].poster + '" /></p>';
+          code += '<p>' + data.movies[i].title + ' (' + data.movies[i].year + ')</p>';
+          code += '<p><input type="submit" value="Add movie" /></p>';
+          code += '</form>';
         }
-        code += "</table>";
         jQuery('#loadingImage').hide();
         jQuery('#movieChoices').html(code);
       }
